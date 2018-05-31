@@ -1,0 +1,330 @@
+---
+title: "Dairy Farm Benchmark Report"
+output: pdf_document
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  q_milk: NA
+  purchased_feed: NA
+  homegrown_feed: NA 
+  exp_l_family: NA
+  exp_l_hired: NA
+  capital: NA
+  misc: NA
+  n.row: NA
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE,warning = FALSE)
+options(scipen=1, digits=2)
+library(tidyverse)
+library(googlesheets)
+library(Benchmarking)
+library(knitr)
+library(kableExtra)
+library(gridExtra)
+
+#n.row=23
+
+sheet <- gs_title("data_efficiency")
+# Read the data
+testData <- gs_read_csv(sheet)
+testData <- testData[1:params$n.row, ]
+
+testData<-testData %>% 
+  mutate(feed = homegrown_feed+purchased_feed) %>% 
+  mutate(labour = exp_l_family+exp_l_hired) 
+  
+  
+  
+X <- testData[, 2:7]
+X <- data.matrix(X)
+Y <- testData[, 1]
+Y <- data.matrix(Y)
+DEA.results <- dea(X, Y,  RTS = 3)
+
+eff.scores.org <- DEA.results$eff
+testData$eff.score <-eff.scores.org
+myscore = eff.scores.org[params$n.row]
+eff.scores <- sort(eff.scores.org)
+
+d.plot <- data.frame(n.farm = 1:length(eff.scores), es = eff.scores)
+n.myfarm <- d.plot$n.farm[which.min(abs(eff.scores - myscore))]
+d.myfarm <-
+data.frame(x = n.myfarm,
+y = myscore,
+lab = paste0("My Farm: ", round(myscore, 3)))
+
+
+# feed efficiency ---------------
+    X.f<-testData[,2]
+    X.f<-data.matrix(X.f)
+    #Y<-testData[,1]
+    #Y<-data.matrix(Y)
+    DEA.results.f <- dea(X.f, Y,  RTS=3);
+    eff.scores.f <- DEA.results.f$eff;
+    testData$eff.score.f <-eff.scores.f
+    myscore.f = eff.scores.f[params$n.row]
+    eff.scores.f <- sort(DEA.results.f$eff);
+    d.plot.f<-data.frame(n.farm=1:length(eff.scores.f),es=eff.scores.f)
+    n.myfarm.f<-d.plot.f$n.farm[which.min(abs(eff.scores.f-myscore.f))]
+    d.myfarm.f<-data.frame(x=n.myfarm.f,y=myscore.f,lab=paste0("My Farm: ",round(myscore.f,3)))
+
+# data of my farm---------------
+    d.my<-testData[params$n.row,]
+    
+```
+# Summary
+
+The overall efficiency score provides a measure of how efficiently an operation converts all of its inputs (feed,
+labour, capital, and miscellaneous expenses) into milk output (litres shipped). It is a measure of overall productivity of the
+operation and allows for comparison to peers' operations as well as your own operation year-to-year in order to
+track performance. The higher the score, the more efficiently the operation converts inputs into milk shipped.
+
+
+Your operation's overall efficiency score is `r myscore`.
+The most efficient performing operation has an overall efficiency score of `r max(eff.scores)`.
+The average overall efficiency score for all operations is `r mean(eff.scores)`.
+
+
+The feed efficiency score provides a measure of how efficiently an operation converts feed into milk shipped. Feed
+expenses are often the highest variable cost for dairy operations and therefore a higher score may result lower costs
+per litre of milk shipped. Feed consumption is also highly correlated with greenhouse gas emissions from bovine
+animals. Therefore, herds with higher feed efficiency scores may produce lower levels of greenhouse gas emissions
+than comparative herds with lower scores.
+
+
+Your feed efficiency score is `r myscore.f`.
+The most efficient performing operation has a feed efficiency score of `r max(eff.scores.f)`.
+The average feed efficiency score for all operations is `r mean(eff.scores.f)`.
+
+
+The following Table 1 provides a comparison between your operation, the average operation and the most efficient
+performing operation. The far right column calculates the difference between your operation and the top 10 most efficient Operations.
+
+```{r}
+top10.data<- testData %>% 
+  top_n(n = 10,wt =eff.score )
+
+tb.op.compare<-data.frame(
+  your.op = unlist(c(testData[params$n.row,"q_milk"],
+              testData[params$n.row,"n_lactating_cows"],
+              testData[params$n.row,"feed"],
+              testData[params$n.row,"labour"],
+              testData[params$n.row,"capital"],
+              testData[params$n.row,"misc"]
+              )),
+  ave.op = c(
+              mean(testData$q_milk),
+              mean(testData$n_lactating_cows),
+              mean(testData$feed),
+              mean(testData$labour),
+              mean(testData$capital),
+              mean(testData$misc)
+    
+  ),
+  top10 = c(
+              mean(top10.data$q_milk),
+              mean(top10.data$n_lactating_cows),
+              mean(top10.data$feed),
+              mean(top10.data$labour),
+              mean(top10.data$capital),
+              mean(top10.data$misc)
+    
+  )
+)
+rownames(tb.op.compare)<-c("Milk Shipped (L)",
+                           "Number of Lactating Cows",
+                           "Feed Expenses ($)",
+                           "Labour Expenses ($)",
+                           "Capital Expenses ($)",
+                           "Miscellaneous Expenses ($)"
+)
+tb.op.compare$diff<-tb.op.compare$your.op- tb.op.compare$top10
+colnames(tb.op.compare)<-c(
+  "My Operation",
+  "Average Operation",
+  "Top 10 Operations",
+  "Difference"
+)
+
+
+tb.op.compare %>%
+  kable(align = 'c',caption = "Operation Comparison") %>%
+  kable_styling()
+```
+
+\newpage
+# Productivity Measures
+The following Table 2 provides a milk output per cow and cost per litre comparison between your operation, the
+average operation and the top 10 most performing operations.
+
+The following Figures visually displays the information above.
+
+```{r}
+milk_output<-testData %>% 
+      mutate(total_cost = purchased_feed+
+               homegrown_feed+
+               capital+
+               exp_l_family+
+               exp_l_hired+
+               misc) %>% 
+      mutate(milk_per_cow = q_milk/n_lactating_cows) %>% 
+      mutate(feed_per_litre_milk = (purchased_feed+homegrown_feed)/q_milk) %>% 
+      mutate(capital_per_litre_milk = capital/q_milk) %>% 
+      mutate(labour_per_litre_milk = (exp_l_family+exp_l_hired)/q_milk) %>% 
+      mutate(misk_per_litre_milk = misc/q_milk) %>% 
+      mutate(ttcost_per_litre_milk = total_cost/q_milk) %>% 
+      select(milk_per_cow,
+             feed_per_litre_milk,
+             capital_per_litre_milk,
+             labour_per_litre_milk,
+             misk_per_litre_milk,
+             ttcost_per_litre_milk,
+             eff.score)
+
+top10<-milk_output %>% 
+      top_n(10,wt = eff.score) %>% 
+      colMeans() %>% 
+      unlist()
+    
+tb_milk_output_data<-data.frame(
+      `My Operation`=unlist(milk_output[params$n.row,1:6]),
+      `Average of All Operations`=unlist(colMeans(milk_output[,1:6])),
+      top10=top10[1:6],
+      row.names =c("Milk Output Per Cow (L)",
+                   "Cost of Feed Per Litre Milk ($)",
+                   "Cost of Capital Per Litre Milk ($)",
+                   "Cost of Labour Per Litre Milk ($)",
+                   "Cost of Miscellaneous Per Litre Milk ($)",
+                   "Total Cost per Litre Milk ($)")
+    )
+    colnames(tb_milk_output_data)<-c("My",
+                                     "Average",
+                                     "Top 10"
+    )
+    
+tb_milk_output_data %>%
+  kable(align = 'c',caption = "Milk Output and Cost Per Litre Comparison") %>%
+  kable_styling()
+
+d.plot.per<-data.frame(t(tb_milk_output_data))
+d.plot.per$name<-rownames(d.plot.per)
+d.plot.per$name<-factor(d.plot.per$name,
+                        levels = c("My",
+                                   "Average",
+                                   "Top 10"))
+
+p1<-ggplot(d.plot.per)+
+  geom_col(aes(x = name, y=Milk.Output.Per.Cow..L.,fill=name))+
+  labs(x="",y="Milk Output Per Cow (L)")+
+  guides(fill=FALSE)
+
+p2<-ggplot(d.plot.per)+
+  geom_col(aes(x = name, y=Cost.of.Feed.Per.Litre.Milk....,fill=name))+
+  labs(x="",y="Feed Per Litre Milk ($)")+
+  guides(fill=FALSE)
+
+p3<-ggplot(d.plot.per)+
+  geom_col(aes(x = name, y=Cost.of.Capital.Per.Litre.Milk....,fill=name))+
+  labs(x="",y="Capital Per Litre Milk ($)")+
+  guides(fill=FALSE)
+
+p4<-ggplot(d.plot.per)+
+  geom_col(aes(x = name, y=Cost.of.Labour.Per.Litre.Milk....,fill=name))+
+  labs(x="",y="Labour Per Litre Milk ($)")+
+  guides(fill=FALSE)
+
+p5<-ggplot(d.plot.per)+
+  geom_col(aes(x = name, y=Cost.of.Miscellaneous.Per.Litre.Milk....,fill=name))+
+  labs(x="",y="Miscellaneous Per Litre Milk ($)")+
+  guides(fill=FALSE)
+
+p6<-ggplot(d.plot.per)+
+  geom_col(aes(x = name, y=Total.Cost.per.Litre.Milk....,fill=name))+
+  labs(x="",y="Total Cost per Litre Milk ($)")+
+  guides(fill=FALSE)
+
+grid.arrange(p1, p2, p3, p4,p5,p6, 
+             nrow = 2,
+             top = "Milk Output and Cost Per Litre Comparison")
+
+
+```
+
+\newpage
+# Milk Yield Comparison
+
+Your Milk Yield is `r d.my$q_milk/d.my$n_lactating_cows` litres per cow.
+The average milk yield of all farms is `r mean(testData$q_milk/testData$n_lactating_cows)` litres per cow.
+
+Milk Yield is calculated by dividing the total amount of milk shipped by the average number of milking cows in
+the benchmark year. 
+
+The following figure shows the distribution of milk yield per cow.  The milk yield per cow on your farm is marked in red. 
+```{r}
+ggplot()+
+  geom_histogram(aes(testData$q_milk/testData$n_lactating_cows))+
+  labs(x="Milk per Cow (L)", y="Number of Farms")+
+  #geom_vline(xintercept =d.my$q_milk/d.my$n_lactating_cows,color="red")+
+  geom_histogram(aes(d.my$q_milk/d.my$n_lactating_cows,fill="My farm"))+
+  guides(fill=guide_legend(title=""))
+```
+
+# Overall Efficiency
+
+```{r}
+plot1<-ggplot() +
+        geom_col(data = d.plot, aes(x = n.farm, y = es)) +
+        geom_hline(
+          data = d.plot,
+          yintercept = myscore,
+          lty = 3,
+          col = "red"
+        ) +
+        labs(title = "Overall Efficiency Scores",
+             x = "Farm", y = "Overall Efficiency Score") +
+        geom_col(aes(x = n.myfarm, y = myscore), fill = "red")+
+        geom_label(
+          data = d.myfarm,
+          aes(
+            x = x,
+            y = min(y+0.1,1),
+            label = lab
+            
+          ),fill = "firebrick1",alpha=0.65,
+          colour = "white",
+          fontface = "bold",
+          vjust = "inward", hjust = "inward"
+        )
+      plot1
+```
+
+
+
+# Feed Efficiency
+```{r}
+plot1<-ggplot() +
+      geom_col(data = d.plot.f, aes(x = n.farm, y = es)) +
+      geom_hline(
+        data = d.plot.f,
+        yintercept = myscore.f,
+        lty = 3,
+        col = "red"
+      ) +
+      labs(title = "Feed Efficiency Scores",
+           x = "Farm", y = "Feed Efficiency Score") +
+      geom_col(aes(x = n.myfarm.f, y = myscore.f), fill = "red")+
+      geom_label(
+        data = d.myfarm.f,
+        aes(
+          x = x,
+          y = min(y+0.1,1),
+          label = lab
+          
+        ),fill = "firebrick1",alpha=0.65,
+        colour = "white",
+        fontface = "bold",
+        vjust = "inward", hjust = "inward"
+      )
+    plot1
+```
+

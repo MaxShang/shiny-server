@@ -1,0 +1,12 @@
+name: benchmark
+title: benchmark
+username:
+account: maxshang
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 342689
+bundleId: 1372966
+url: https://maxshang.shinyapps.io/benchmark/
+when: 1526307044.35035
+asMultiple: FALSE
+asStatic: FALSE

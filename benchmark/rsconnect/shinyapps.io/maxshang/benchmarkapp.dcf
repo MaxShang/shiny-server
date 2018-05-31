@@ -1,0 +1,13 @@
+name: benchmarkapp
+title: benchmarkapp
+username:
+account: maxshang
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 347735
+bundleId: 1393628
+url: https://maxshang.shinyapps.io/benchmarkapp/
+when: 1527280768.97863
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: tmp/app.R
