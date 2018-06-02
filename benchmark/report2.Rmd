@@ -3,36 +3,39 @@ title: "Dairy Farm Benchmark Report"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: pdf_document
 params:
+  q_milk: NA
+  purchased_feed: NA
+  homegrown_feed: NA 
+  exp_l_family: NA
+  exp_l_hired: NA
+  capital: NA
+  misc: NA
   n.row: NA
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE,warning = FALSE)
 options(scipen=1, digits=2)
 library(tidyverse)
-library(googlesheets)
 library(Benchmarking)
 library(knitr)
 library(kableExtra)
 library(gridExtra)
-
+library(tinytex)
 # for test
-#n.row=50
+n.row=11
 # when deploy
 # replace n.row with params$n.row
+results_dir<-"user_input_data"
+loadData<- function() {
+  files <- list.files(file.path(results_dir), full.names = TRUE)
+  data <- lapply(files, read.csv, stringsAsFactors = FALSE) %>% 
+    do.call(rbind, .)
+  data
+}
 
-#sheet <- gs_title("data_efficiency")
-# Read the data
-#testData <- gs_read_csv(sheet)
-# results_dir<-"user_input_data"
-# loadData<- function() {
-#   files <- list.files(file.path(results_dir), full.names = TRUE)
-#   data <- lapply(files, read.csv, stringsAsFactors = FALSE) %>% 
-#     do.call(rbind, .)
-#   data
-# }
-# testData<-loadData()
-testData<-read.csv("data.csv")
-testData <- testData[1:params$n.row, ]
+testData <- loadData()
+testData <- testData[1:n.row, ]
+#testData <- testData[1:5, ]
 
 testData<-testData %>% 
   mutate(feed = homegrown_feed+purchased_feed) %>% 
@@ -48,7 +51,7 @@ DEA.results <- dea(X, Y,  RTS = 3)
 
 eff.scores.org <- DEA.results$eff
 testData$eff.score <-eff.scores.org
-myscore = eff.scores.org[params$n.row]
+myscore = eff.scores.org[n.row]
 eff.scores <- sort(eff.scores.org)
 
 d.plot <- data.frame(n.farm = 1:length(eff.scores), es = eff.scores)
@@ -67,14 +70,14 @@ lab = paste0("My Farm: ", round(myscore, 3)))
     DEA.results.f <- dea(X.f, Y,  RTS=3);
     eff.scores.f <- DEA.results.f$eff;
     testData$eff.score.f <-eff.scores.f
-    myscore.f = eff.scores.f[params$n.row]
+    myscore.f = eff.scores.f[n.row]
     eff.scores.f <- sort(DEA.results.f$eff);
     d.plot.f<-data.frame(n.farm=1:length(eff.scores.f),es=eff.scores.f)
     n.myfarm.f<-d.plot.f$n.farm[which.min(abs(eff.scores.f-myscore.f))]
     d.myfarm.f<-data.frame(x=n.myfarm.f,y=myscore.f,lab=paste0("My Farm: ",round(myscore.f,3)))
 
 # data of my farm---------------
-    d.my<-testData[params$n.row,]
+    d.my<-testData[n.row,]
     
 ```
 
@@ -194,7 +197,7 @@ top10<-milk_output %>%
       unlist()
     
 tb_milk_output_data<-data.frame(
-      `My Operation`=unlist(milk_output[params$n.row,1:6]),
+      `My Operation`=unlist(milk_output[n.row,1:6]),
       `Average of All Operations`=unlist(colMeans(milk_output[,1:6])),
       top10=top10[1:6],
       row.names =c("Milk Output Per Cow (L)",

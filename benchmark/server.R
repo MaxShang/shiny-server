@@ -1,25 +1,45 @@
 ## app.R ##
 library(shinydashboard)
 library(shiny)
-library(googlesheets)
 library(Benchmarking)
 library(ggplot2)
 library(tidyverse)
 library(shinyBS) # for tooltip
 table <- "responses"
 
+# saveData <- function(data) {
+#   # Grab the Google Sheet
+#   sheet <- gs_title("data_efficiency")
+#   # Add the data as a new row
+#   gs_add_row(sheet, input = data)
+# }
+get_time_human <- function() {
+  format(Sys.time(), "%Y%m%d-%H%M%OS")
+}
+results_dir<-"user_input_data"
 saveData <- function(data) {
-  # Grab the Google Sheet
-  sheet <- gs_title("data_efficiency")
-  # Add the data as a new row
-  gs_add_row(sheet, input = data)
+  data <- t(data)
+  file_name <- paste0(paste(get_time_human(), 
+                            #digest(data,algo = "md5"), 
+                            as.integer(runif(1,10^8,10^9)),
+                            sep = "_"), ".csv")
+  write.csv(x = data, file = file.path(results_dir, file_name), 
+            row.names = FALSE, quote = TRUE)
 }
 
-loadData <- function() {
-  # Grab the Google Sheet
-  sheet <- gs_title("data_efficiency")
-  # Read the data
-  gs_read_csv(sheet)
+# loadData <- function() {
+#   # Grab the Google Sheet
+#   sheet <- gs_title("data_efficiency")
+#   # Read the data
+#   gs_read_csv(sheet)
+# }
+
+loadData<- function() {
+  files <- list.files(file.path(results_dir), full.names = TRUE)
+  data <- lapply(files, read.csv, stringsAsFactors = FALSE) %>% 
+    do.call(rbind, .)
+  data
+ 
 }
 
 # Define the fields we want to save from the form
@@ -64,17 +84,42 @@ fields <- c("q_milk",
 )
 # server -----
 server <- function(input, output) {
+  # welcome-----
+
+  output$cowbg<-renderImage(
+    #width  <- session$clientData$output_cowbg_width
+    #height <- session$clientData$output_cowbg_height
+    
+    list(
+    src = "cowbg.png",
+    filetype = "image/png",
+    width = 720,
+    height = 720,
+    alt = "This is background"),deleteFile = FALSE
+    
+  )
+  
   # Whenever a field is filled, aggregate all form data
   formData <- reactive({
     data <- sapply(fields, function(x) input[[x]])
-    #data
+    data
   })
   
   
   # When the Submit button is clicked, save the form data
   observeEvent(input$submit, {
-    saveData(formData())
     
+        # alert------
+        showModal(modalDialog(
+                  title = "Submitted Successfully",
+                  "Benchmark takes a few seconds.  
+                  Accuracy of benchmark results depends on your input.    
+                  To see the results, please click links on the left panel.",
+                  easyClose = TRUE
+        ))             
+    saveData(formData())
+        
+          
     # Show the previous responses -----
     # (update with current response when Submit is clicked)
     # output$responses <- DT::renderDataTable({
@@ -82,9 +127,10 @@ server <- function(input, output) {
     #   loadData()
     # }) 
     
-    sheet <- gs_title("data_efficiency")
+    #sheet <- gs_title("data_efficiency")
     # Read the data
-    testData<-gs_read_csv(sheet)
+    testData<-loadData()
+    write.csv(testData,"data.csv")
     testData <- testData %>% 
                          drop_na()
     n.row<-dim(testData)[1]
@@ -275,6 +321,7 @@ server <- function(input, output) {
     output$eff_hist<-renderPlot(
       ggplot()+
         geom_histogram(mapping = aes(eff.scores))+
+        geom_vline(xintercept =myscore,color="red" )+
         labs(title = "Histogram of Overall Efficiency Scores",
              x="Efficiency Score",
              y="Number of Farms")
@@ -344,7 +391,23 @@ server <- function(input, output) {
     Efficiency score ranges from 0 (the least efficient) 
     to 1 (the most efficient). 
     ")
+    output$text_eff_score_dist<-renderText(
+      "The red vertical line indicates your farm efficiency score.")
     
+    output$infobox_overall_es <- renderValueBox({
+      valueBox(
+        round(myscore, digits = 3), "Overall Efficiency Score", icon = icon("signal"),
+        color = "light-blue"
+      )
+    })
+    
+    output$infobox_overall_esf <- renderValueBox({
+      valueBox(
+        round(myscore.f,digits = 3), "Feed Efficiency Score", icon = icon("signal"),
+        color = "light-blue"
+      )
+    })
+   
     # generate report---------------
     
     output$report <- downloadHandler(
@@ -359,13 +422,13 @@ server <- function(input, output) {
 
         # Set up parameters to pass to Rmd document
         params <- list(
-          q_milk = input$q_milk,
-          purchased_feed= input$purchased_feed,
-          homegrown_feed= input$homegrown_feed,
-          exp_l_family= input$exp_l_family,
-          exp_l_hired= input$exp_l_hired,
-          capital = input$capital,
-          misc = input$misc,
+          #q_milk = input$q_milk,
+          #purchased_feed= input$purchased_feed,
+          #homegrown_feed= input$homegrown_feed,
+          #exp_l_family= input$exp_l_family,
+          #exp_l_hired= input$exp_l_hired,
+          #capital = input$capital,
+          #misc = input$misc,
           n.row = n.row
         )
 

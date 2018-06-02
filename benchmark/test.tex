@@ -1,0 +1,281 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Untitled},
+            pdfauthor={Max},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Untitled}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Max}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{2018-05-26}
+
+
+\begin{document}
+\maketitle
+
+\subsection{R Markdown}\label{r-markdown}
+
+This is an R Markdown document. Markdown is a simple formatting syntax
+for authoring HTML, PDF, and MS Word documents. For more details on
+using R Markdown see \url{http://rmarkdown.rstudio.com}.
+
+When you click the \textbf{Knit} button a document will be generated
+that includes both content as well as the output of any embedded R code
+chunks within the document. You can embed an R code chunk like this:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(cars)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00
+\end{verbatim}
+
+\subsection{Including Plots}\label{including-plots}
+
+You can also embed plots, for example:
+
+\includegraphics{test_files/figure-latex/pressure-1.pdf}
+
+Note that the \texttt{echo\ =\ FALSE} parameter was added to the code
+chunk to prevent printing of the R code that generated the plot.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data}\NormalTok{(mtcars)}
+
+\NormalTok{mtcars2 <-}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{mutate}\NormalTok{(mtcars,}
+                \DataTypeTok{cyl_factor =} \KeywordTok{factor}\NormalTok{(cyl,}
+                                    \DataTypeTok{levels =} \KeywordTok{c}\NormalTok{(}\DecValTok{6}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{8}\NormalTok{),}
+                                    \DataTypeTok{labels =} \KeywordTok{paste}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{6}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{8}\NormalTok{), }\StringTok{"cylinders"}\NormalTok{)),}
+                \DataTypeTok{cyl_character =} \KeywordTok{paste}\NormalTok{(cyl, }\StringTok{"cylinders"}\NormalTok{))}
+\NormalTok{our_summary1 <-}
+\StringTok{  }\KeywordTok{list}\NormalTok{(}\StringTok{"Miles Per Gallon"}\NormalTok{ =}
+\StringTok{       }\KeywordTok{list}\NormalTok{(}\StringTok{"min"}\NormalTok{ =}\StringTok{ }\ErrorTok{~}\StringTok{ }\KeywordTok{min}\NormalTok{(mpg),}
+            \StringTok{"max"}\NormalTok{ =}\StringTok{ }\ErrorTok{~}\StringTok{ }\KeywordTok{max}\NormalTok{(mpg),}
+            \StringTok{"mean (sd)"}\NormalTok{ =}\StringTok{ }\ErrorTok{~}\StringTok{ }\NormalTok{qwraps2}\OperatorTok{::}\KeywordTok{mean_sd}\NormalTok{(mpg)),}
+       \StringTok{"Displacement"}\NormalTok{ =}
+\StringTok{       }\KeywordTok{list}\NormalTok{(}\StringTok{"min"}\NormalTok{ =}\StringTok{ }\ErrorTok{~}\StringTok{ }\KeywordTok{min}\NormalTok{(disp),}
+            \StringTok{"max"}\NormalTok{ =}\StringTok{ }\ErrorTok{~}\StringTok{ }\KeywordTok{max}\NormalTok{(disp),}
+            \StringTok{"mean (sd)"}\NormalTok{ =}\StringTok{ }\ErrorTok{~}\StringTok{ }\NormalTok{qwraps2}\OperatorTok{::}\KeywordTok{mean_sd}\NormalTok{(disp)),}
+       \StringTok{"Weight (1000 lbs)"}\NormalTok{ =}
+\StringTok{       }\KeywordTok{list}\NormalTok{(}\StringTok{"min"}\NormalTok{ =}\StringTok{ }\ErrorTok{~}\StringTok{ }\KeywordTok{min}\NormalTok{(wt),}
+            \StringTok{"max"}\NormalTok{ =}\StringTok{ }\ErrorTok{~}\StringTok{ }\KeywordTok{max}\NormalTok{(wt),}
+            \StringTok{"mean (sd)"}\NormalTok{ =}\StringTok{ }\ErrorTok{~}\StringTok{ }\NormalTok{qwraps2}\OperatorTok{::}\KeywordTok{mean_sd}\NormalTok{(wt)),}
+       \StringTok{"Forward Gears"}\NormalTok{ =}
+\StringTok{       }\KeywordTok{list}\NormalTok{(}\StringTok{"Three"}\NormalTok{ =}\StringTok{ }\ErrorTok{~}\StringTok{ }\NormalTok{qwraps2}\OperatorTok{::}\KeywordTok{n_perc0}\NormalTok{(gear }\OperatorTok{==}\StringTok{ }\DecValTok{3}\NormalTok{),}
+            \StringTok{"Four"}\NormalTok{  =}\StringTok{ }\ErrorTok{~}\StringTok{ }\NormalTok{qwraps2}\OperatorTok{::}\KeywordTok{n_perc0}\NormalTok{(gear }\OperatorTok{==}\StringTok{ }\DecValTok{4}\NormalTok{),}
+            \StringTok{"Five"}\NormalTok{  =}\StringTok{ }\ErrorTok{~}\StringTok{ }\NormalTok{qwraps2}\OperatorTok{::}\KeywordTok{n_perc0}\NormalTok{(gear }\OperatorTok{==}\StringTok{ }\DecValTok{5}\NormalTok{))}
+\NormalTok{       )}
+
+\KeywordTok{summary_table}\NormalTok{(mtcars2, our_summary1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|l}
+\hline
+ & mtcars2 (N = 32)\\
+\hline
+\bf{Miles Per Gallon} & ~\\
+\hline
+~~ min & 10.4\\
+\hline
+~~ max & 33.9\\
+\hline
+~~ mean (sd) & 20.09 $\pm$ 6.03\\
+\hline
+\bf{Displacement} & ~\\
+\hline
+~~ min & 71.1\\
+\hline
+~~ max & 472\\
+\hline
+~~ mean (sd) & 230.72 $\pm$ 123.94\\
+\hline
+\bf{Weight (1000 lbs)} & ~\\
+\hline
+~~ min & 1.513\\
+\hline
+~~ max & 5.424\\
+\hline
+~~ mean (sd) & 3.22 $\pm$ 0.98\\
+\hline
+\bf{Forward Gears} & ~\\
+\hline
+~~ Three & 15 (47)\\
+\hline
+~~ Four & 12 (38)\\
+\hline
+~~ Five & 5 (16)\\
+\hline
+\end{tabular}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary_table}\NormalTok{(dplyr}\OperatorTok{::}\KeywordTok{group_by}\NormalTok{(mtcars2, cyl_factor), our_summary1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|l|l|l}
+\hline
+ & cyl_factor: 6 cylinders (N = 7) & cyl_factor: 4 cylinders (N = 11) & cyl_factor: 8 cylinders (N = 14)\\
+\hline
+\bf{Miles Per Gallon} & ~ & ~ & ~\\
+\hline
+~~ min & 17.8 & 21.4 & 10.4\\
+\hline
+~~ max & 21.4 & 33.9 & 19.2\\
+\hline
+~~ mean (sd) & 19.74 $\pm$ 1.45 & 26.66 $\pm$ 4.51 & 15.10 $\pm$ 2.56\\
+\hline
+\bf{Displacement} & ~ & ~ & ~\\
+\hline
+~~ min & 145.0 & 71.1 & 275.8\\
+\hline
+~~ max & 258.0 & 146.7 & 472.0\\
+\hline
+~~ mean (sd) & 183.31 $\pm$ 41.56 & 105.14 $\pm$ 26.87 & 353.10 $\pm$ 67.77\\
+\hline
+\bf{Weight (1000 lbs)} & ~ & ~ & ~\\
+\hline
+~~ min & 2.620 & 1.513 & 3.170\\
+\hline
+~~ max & 3.460 & 3.190 & 5.424\\
+\hline
+~~ mean (sd) & 3.12 $\pm$ 0.36 & 2.29 $\pm$ 0.57 & 4.00 $\pm$ 0.76\\
+\hline
+\bf{Forward Gears} & ~ & ~ & ~\\
+\hline
+~~ Three & 2 (29) & 1 (9) & 12 (86)\\
+\hline
+~~ Four & 4 (57) & 8 (73) & 0 (0)\\
+\hline
+~~ Five & 1 (14) & 2 (18) & 2 (14)\\
+\hline
+\end{tabular}
+
+
+\end{document}

@@ -1,33 +1,18 @@
 library(shiny)
-library(shinyBS)
- server <- function(input, output) {
-  output$distPlot <- renderPlot({
-    hist(rnorm(input$obs), col = 'darkgray', border = 'white')
-
-  output$rendered <-   renderUI({
-    checkboxGroupInput("qualdim",  tags$span("Auswahl der Qualitätsdimension",   
-      tipify(bsButton("pB2", "?", style = "inverse", size = "extra-small"),
-             "Here, I can place some help")),
-
-                       c("Lernerfolg"             = "Lernerfolg"   , 
-                         "Enthusiasmus"           = "Enthusiasmus"          
-                         ),
-                       selected = c("Lernerfolg"))
-
-
-  })
-
-  })
-}
 
 ui <- fluidPage(
-  sidebarLayout(
-    sidebarPanel(
-      sliderInput("obs", "Number of observations:", min = 10, max = 500, value = 100),
-      uiOutput("rendered")
-    ),
-    mainPanel(plotOutput("distPlot"))
+  titlePanel("Tabsets"),
+  div(style = "position:absolute;center:1em;", 
+      actionButton('load_inputs', 'Load inputs'),
+      actionButton('save_inputs', 'Save inputs')
+  ),
+  tabsetPanel(
+    tabPanel("Tab1", h2("Content 1")), 
+    tabPanel("Tab2", h2("Content 2")), 
+    tabPanel("Tab3", h2("Content 3"))
   )
 )
 
-shinyApp(ui = ui, server = server)
+server <- function(input, output, session) {
+}
+shinyApp(ui, server)
