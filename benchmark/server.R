@@ -1,55 +1,31 @@
-## app.R ##
-library(shinydashboard)
-library(shiny)
-library(Benchmarking)
-library(ggplot2)
-library(tidyverse)
-library(shinyBS) # for tooltip
-table <- "responses"
+source("load_packages.R")
+data_folder<-"user_input_data"
 
-# saveData <- function(data) {
-#   # Grab the Google Sheet
-#   sheet <- gs_title("data_efficiency")
-#   # Add the data as a new row
-#   gs_add_row(sheet, input = data)
-# }
 get_time_human <- function() {
-  format(Sys.time(), "%Y%m%d-%H%M%OS")
-}
-results_dir<-"user_input_data"
-saveData <- function(data) {
-  data <- t(data)
-  file_name <- paste0(paste(get_time_human(), 
-                            #digest(data,algo = "md5"), 
-                            as.integer(runif(1,10^8,10^9)),
-                            sep = "_"), ".csv")
-  write.csv(x = data, file = file.path(results_dir, file_name), 
-            row.names = FALSE, quote = TRUE)
+        format(Sys.time(), "%Y%m%d-%H%M%OS")
 }
 
-# loadData <- function() {
-#   # Grab the Google Sheet
-#   sheet <- gs_title("data_efficiency")
-#   # Read the data
-#   gs_read_csv(sheet)
-# }
+saveData <- function(data,id) {
+        file_name <- paste0(id,".csv")
+        data <- t(c(data,id))
+        write.csv(x = data, file = file.path(data_folder, file_name), 
+                  row.names = FALSE, quote = TRUE)
+}
 
-loadData<- function() {
-  files <- list.files(file.path(results_dir), full.names = TRUE)
-  data <- lapply(files, read.csv, stringsAsFactors = FALSE) %>% 
-    do.call(rbind, .)
-  data
- 
+loadData <- function() {
+        files <- list.files(file.path(data_folder), full.names = TRUE)
+        data <- lapply(files, read.csv, stringsAsFactors = FALSE) %>% 
+                do.call(rbind, .)
+        data<-data %>% 
+                mutate(feed = homegrown_feed+purchased_feed) %>% 
+                mutate(labour = exp_l_family+exp_l_hired) %>% 
+                rename(farm_id=X) %>% 
+                mutate(farm_id=as.character(farm_id)) %>% 
+                arrange(farm_id)
+        data
 }
 
 # Define the fields we want to save from the form
-# fields <- c("q_milk",
-#             "purchased_feed",
-#             "homegrown_feed",
-#             "capital",
-#             "exp_l_family",
-#             "exp_l_hired",
-#             "misc")
 fields <- c("q_milk",
             "purchased_feed",
             "homegrown_feed",
@@ -89,15 +65,12 @@ server <- function(input, output) {
   output$cowbg<-renderImage(
     #width  <- session$clientData$output_cowbg_width
     #height <- session$clientData$output_cowbg_height
-    
     list(
     src = "cowbg.png",
     filetype = "image/png",
     width = 720,
     height = 720,
-    alt = "This is background"),deleteFile = FALSE
-    
-  )
+    alt = "This is background"),deleteFile = FALSE)
   
   # Whenever a field is filled, aggregate all form data
   formData <- reactive({
@@ -108,7 +81,6 @@ server <- function(input, output) {
   
   # When the Submit button is clicked, save the form data
   observeEvent(input$submit, {
-    
         # alert------
         showModal(modalDialog(
                   title = "Submitted Successfully",
@@ -116,31 +88,26 @@ server <- function(input, output) {
                   Accuracy of benchmark results depends on your input.    
                   To see the results, please click links on the left panel.",
                   easyClose = TRUE
-        ))             
-    saveData(formData())
-        
-          
-    # Show the previous responses -----
-    # (update with current response when Submit is clicked)
-    # output$responses <- DT::renderDataTable({
-    #   input$submit
-    #   loadData()
-    # }) 
+        )) 
+    rdm_id <-floor(runif(1,10^9,10^11))
+    id<-paste0(as.integer(Sys.time()),"-",get_time_human(),"-",rdm_id)
+    saveData(formData(),id =id )
     
-    #sheet <- gs_title("data_efficiency")
     # Read the data
     testData<-loadData()
-    write.csv(testData,"data.csv")
-    testData <- testData %>% 
-                         drop_na()
-    n.row<-dim(testData)[1]
+    write.csv(testData,paste0("data",".csv"))
+    # testData <- testData %>% 
+    #                      drop_na()
     
-        
-    
+    n.row<-which(testData$farm_id == id)
+    testData<-testData[1:n.row,]
     # overall efficiency ---------------
-    X<-testData[,2:7]
+    
+    X<-testData %>% 
+            select(feed,capital,labour,misc)
     X<-data.matrix(X)
-    Y<-testData[,1]
+    Y<-testData %>% 
+            select(q_milk)
     Y<-data.matrix(Y)
     DEA.results <- dea(X, Y,  RTS=3);
     eff.scores.org <- DEA.results$eff;
@@ -289,7 +256,8 @@ server <- function(input, output) {
                                        df.avefarm
     )
     # feed efficiency ---------------
-    X.f<-testData[,2]
+    X.f<-testData %>% 
+            select(feed)
     X.f<-data.matrix(X.f)
     #Y<-testData[,1]
     #Y<-data.matrix(Y)
@@ -411,6 +379,8 @@ server <- function(input, output) {
     # generate report---------------
     
     output$report <- downloadHandler(
+            
+            
       # # For PDF output, change this to "report.pdf"
       filename = "report.pdf",
       content = function(file) {
@@ -422,24 +392,34 @@ server <- function(input, output) {
 
         # Set up parameters to pass to Rmd document
         params <- list(
-          #q_milk = input$q_milk,
-          #purchased_feed= input$purchased_feed,
-          #homegrown_feed= input$homegrown_feed,
-          #exp_l_family= input$exp_l_family,
-          #exp_l_hired= input$exp_l_hired,
-          #capital = input$capital,
-          #misc = input$misc,
+          q_milk = input$q_milk,
+          purchased_feed= input$purchased_feed,
+          homegrown_feed= input$homegrown_feed,
+          exp_l_family= input$exp_l_family,
+          exp_l_hired= input$exp_l_hired,
+          capital = input$capital,
+          misc = input$misc,
           n.row = n.row
         )
 
         # Knit the document, passing in the `params` list, and eval it in a
         # child of the global environment (this isolates the code in the document
         # from the code in this app).
-        rmarkdown::render(tempReport, output_file = file,
-                          params = params,
-                          envir = new.env(parent = globalenv())
-        )
-      }
+        input$report
+        withProgress(message = 'Generating Report: ', value = 0, {
+                n=100
+                for (i in 1:100){
+                        incProgress(1/n, detail = paste("  ",i,"%","done"))
+                        Sys.sleep(0.03)}
+                rmarkdown::render(quiet = TRUE,tempReport, output_file = file,
+                                  params = params,
+                                  envir = new.env(parent = globalenv())
+                )
+                
+               
+        
+        
+      })}
     )
 })
   
