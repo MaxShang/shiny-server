@@ -3,46 +3,34 @@ title: "Dairy Farm Benchmark Report"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: pdf_document
 params:
+  q_milk: NA
+  purchased_feed: NA
+  homegrown_feed: NA 
+  exp_l_family: NA
+  exp_l_hired: NA
+  capital: NA
+  misc: NA
   n.row: NA
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE,warning = FALSE)
 options(scipen=1, digits=2)
 library(tidyverse)
-library(googlesheets)
 library(Benchmarking)
 library(knitr)
 library(kableExtra)
 library(gridExtra)
 
-# for test
-#n.row=50
-# when deploy
-# replace n.row with params$n.row
 
-#sheet <- gs_title("data_efficiency")
-# Read the data
-#testData <- gs_read_csv(sheet)
-# results_dir<-"user_input_data"
-# loadData<- function() {
-#   files <- list.files(file.path(results_dir), full.names = TRUE)
-#   data <- lapply(files, read.csv, stringsAsFactors = FALSE) %>% 
-#     do.call(rbind, .)
-#   data
-# }
-# testData<-loadData()
-testData<-read.csv("data.csv")
+# set to data location on server
+testData <- read.csv("/srv/shiny-server/benchmark/data.csv")
 testData <- testData[1:params$n.row, ]
 
-testData<-testData %>% 
-  mutate(feed = homegrown_feed+purchased_feed) %>% 
-  mutate(labour = exp_l_family+exp_l_hired) 
-  
-  
-  
-X <- testData[, 2:7]
+X<-testData %>% 
+            select(feed,capital,labour,misc)
 X <- data.matrix(X)
-Y <- testData[, 1]
+Y<-testData %>% 
+            select(q_milk)
 Y <- data.matrix(Y)
 DEA.results <- dea(X, Y,  RTS = 3)
 
@@ -60,7 +48,8 @@ lab = paste0("My Farm: ", round(myscore, 3)))
 
 
 # feed efficiency ---------------
-    X.f<-testData[,2]
+    X.f<-testData %>% 
+            select(feed)
     X.f<-data.matrix(X.f)
     #Y<-testData[,1]
     #Y<-data.matrix(Y)

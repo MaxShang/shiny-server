@@ -1,11 +1,4 @@
-## app.R ##
 library(shinydashboard)
-library(shiny)
-library(Benchmarking)
-library(ggplot2)
-library(tidyverse)
-library(shinyBS) # for tooltip
-
 ui <- dashboardPage(
   dashboardHeader(title = "Dairy Benchmark"),
   ## Sidebar content
