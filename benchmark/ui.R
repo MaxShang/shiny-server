@@ -258,7 +258,7 @@ ui <- dashboardPage(
                   ))
               )
       ),
-      #weolcome------
+      #welcome------
       tabItem(tabName = "welcome",
               
               fluidRow(column(12,align="center",
