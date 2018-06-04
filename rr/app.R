@@ -38,8 +38,9 @@ server <- function(input, output) {
    output$distPlot <- renderPlot({
       # generate bins based on input$bins from ui.R
      d<-data.frame(v1=rnorm(100))
-     write.csv(d,"data.csv")
-      x    <- read.csv("data.csv")
+     #write.csv(d,"data.csv")
+      #x    <- read.csv("data.csv")
+      x<-d
       plot(x$v1[1:input$bins])
       
    })
