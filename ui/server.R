@@ -5,7 +5,10 @@ library(ggplot2)
 library(DT)
 library(tidyverse)
 library(shinyBS) # for tooltip
-library(tinytex) # for tooltip
+library(knitr)
+library(kableExtra)
+library(gridExtra)
+library(tinytex)
 
 data_folder<-"user_input_data"
 
