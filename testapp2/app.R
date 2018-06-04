@@ -36,15 +36,11 @@ ui <- fluidPage(
 server <- function(input, output) {
  
    output$distPlot <- renderPlot({
-     d.tmp<-rnorm(input$bins+1)
-     write.csv(d.tmp,"data.csv")
+     
      d<-read.csv("data.csv")
-      # generate bins based on input$bins from ui.R
-      x    <- d 
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
+     x<-d$x[1:input$bins]
       
-      # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  plot(x)
      
    })
 }
