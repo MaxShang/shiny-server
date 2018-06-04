@@ -23,9 +23,9 @@ library(gridExtra)
 library(tinytex)
 
 # set to data location on server
-#testData <- read.csv("/srv/shiny-server/benchmark/data.csv")
-testData <- read.csv("data.csv")
-
+testData <- read.csv("/srv/shiny-server/rr/data.csv")
+#testData <- read.csv("C:/Users/zshang/Documents/GitHub/shiny-server/rr/data.csv")
+#testData <- read.csv("data.csv")
 
 #dir<-getwd()
 #testData <- read.csv(paste0(dir,"/data.csv"))
