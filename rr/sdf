@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <script type="application/shiny-singletons"></script>
+  <script type="application/html-dependencies">json2[2014.02.04];jquery[1.12.4];shiny[1.1.0];font-awesome[4.7.0];selectize[0.11.2];bootstrap[3.3.7];htmlwidgets[1.2];datatables-css[0.0.0];datatables-binding[0.4];crosstalk[1.0.0];AdminLTE[2.0.6];shinydashboard[0.7.0]</script>
+<script src="shared/json2-min.js"></script>
+<script src="shared/jquery.min.js"></script>
+<link href="shared/shiny.css" rel="stylesheet" />
+<script src="shared/shiny.min.js"></script>
+<link href="shared/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+<link href="shared/selectize/css/selectize.bootstrap3.css" rel="stylesheet" />
+<!--[if lt IE 9]>
+<script src="shared/selectize/js/es5-shim.min.js"></script>
+<![endif]-->
+<script src="shared/selectize/js/selectize.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="shared/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<script src="shared/bootstrap/js/bootstrap.min.js"></script>
+<script src="shared/bootstrap/shim/html5shiv.min.js"></script>
+<script src="shared/bootstrap/shim/respond.min.js"></script>
+<script src="htmlwidgets-1.2/htmlwidgets.js"></script>
+<link href="datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="datatables-binding-0.4/datatables.js"></script>
+<link href="crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="AdminLTE-2.0.6/AdminLTE.min.css" rel="stylesheet" />
+<link href="AdminLTE-2.0.6/_all-skins.min.css" rel="stylesheet" />
+<script src="AdminLTE-2.0.6/app.min.js"></script>
+<link href="shinydashboard-0.7.0/shinydashboard.css" rel="stylesheet" />
+<script src="shinydashboard-0.7.0/shinydashboard.min.js"></script>  <title>Dairy Benchmark</title>
+  <style>#submit{background-color:orange}</style>
+  <style type="text/css">#cowbg img {max-width: 100%; width: 100%; height: auto}</style>
+
+</head>
+
+<body class="skin-blue" style="min-height: 611px;">
+  <div class="wrapper">
+    <header class="main-header">
+      <span class="logo">Dairy Benchmark</span>
+      <nav class="navbar navbar-static-top" role="navigation">
+        <span style="display:none;">
+          <i class="fa fa-bars"></i>
+        </span>
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+          <span class="sr-only">Toggle navigation</span>
+        </a>
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav"></ul>
+        </div>
+      </nav>
+    </header>
+    <aside id="sidebarCollapsed" class="main-sidebar" data-collapsed="false">
+      <section id="sidebarItemExpanded" class="sidebar">
+        <ul class="sidebar-menu">
+          <li>
+            <a href="#shiny-tab-welcome" data-toggle="tab" data-value="welcome">
+              <span></span>
+            </a>
+          </li>
+          <li>
+            <a href="#shiny-tab-info" data-toggle="tab" data-value="info">
+              <i class="fa fa-user"></i>
+              <span>Farm Info</span>
+            </a>
+          </li>
+          <li>
+            <a href="#shiny-tab-overall_eff" data-toggle="tab" data-value="overall_eff">
+              <i class="fa fa-bar-chart-o"></i>
+              <span>Overall Efficiency</span>
+            </a>
+          </li>
+          <li>
+            <a href="#shiny-tab-feed_eff" data-toggle="tab" data-value="feed_eff">
+              <i class="fa fa-bar-chart-o"></i>
+              <span>Feed Efficiency</span>
+            </a>
+          </li>
+          <li>
+            <a href="#shiny-tab-milk_output" data-toggle="tab" data-value="milk_output">
+              <i class="fa fa-table"></i>
+              <span>Milk Output</span>
+            </a>
+          </li>
+          <li>
+            <a href="#shiny-tab-expenses" data-toggle="tab" data-value="expenses">
+              <i class="fa fa-pie-chart"></i>
+              <span>Expenses</span>
+            </a>
+          </li>
+          <li>
+            <a href="#shiny-tab-download" data-toggle="tab" data-value="download">
+              <i class="fa fa-download"></i>
+              <span>Download</span>
+            </a>
+          </li>
+          <li>
+            <a href="#shiny-tab-about_us" data-toggle="tab" data-value="about_us">
+              <i class="fa fa-info-circle"></i>
+              <span>About us</span>
+            </a>
+          </li>
+          <li>
+            <a href="#shiny-tab-contact_us" data-toggle="tab" data-value="contact_us">
+              <i class="fa fa-envelope-square"></i>
+              <span>Contact us</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+    </aside>
+    <div class="content-wrapper">
+      <section class="content">
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane" id="shiny-tab-info">
+            <div class="container-fluid">
+              <div class="col-sm-6">
+                <div class="box box-solid box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Basic Information</h3>
+                  </div>
+                  <div class="box-body">
+                    <div class="form-group shiny-input-container">
+                      <label class="control-label" for="year">Year</label>
+                      <div>
+                        <select id="year"><option value="2007">2007</option>
+<option value="2008">2008</option>
+<option value="2009">2009</option>
+<option value="2010">2010</option>
+<option value="2011">2011</option>
+<option value="2012">2012</option>
+<option value="2013">2013</option>
+<option value="2014">2014</option>
+<option value="2015">2015</option>
+<option value="2016">2016</option>
+<option value="2017">2017</option>
+<option value="2018" selected>2018</option>
+<option value="2019">2019</option>
+<option value="2020">2020</option>
+<option value="2021">2021</option>
+<option value="2022">2022</option>
+<option value="2023">2023</option>
+<option value="2024">2024</option>
+<option value="2025">2025</option>
+<option value="2026">2026</option>
+<option value="2027">2027</option>
+<option value="2028">2028</option>
+<option value="2029">2029</option>
+<option value="2030">2030</option>
+<option value="2031">2031</option>
+<option value="2032">2032</option>
+<option value="2033">2033</option>
+<option value="2034">2034</option>
+<option value="2035">2035</option>
+<option value="2036">2036</option>
+<option value="2037">2037</option>
+<option value="2038">2038</option>
+<option value="2039">2039</option>
+<option value="2040">2040</option>
+<option value="2041">2041</option>
+<option value="2042">2042</option>
+<option value="2043">2043</option>
+<option value="2044">2044</option>
+<option value="2045">2045</option>
+<option value="2046">2046</option>
+<option value="2047">2047</option>
+<option value="2048">2048</option>
+<option value="2049">2049</option>
+<option value="2050">2050</option></select>
+                        <script type="application/json" data-for="year" data-nonempty="">{}</script>
+                      </div>
+                    </div>
+                    <div id="business_type" class="form-group shiny-input-radiogroup shiny-input-container">
+                      <label class="control-label" for="business_type">Farm Business Type</label>
+                      <div class="shiny-options-group">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="business_type" value="Sole Propritor" checked="checked"/>
+                            <span>Sole Propritor</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="business_type" value="Corporation"/>
+                            <span>Corporation</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="business_type" value="Partnership"/>
+                            <span>Partnership</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="edu" class="form-group shiny-input-radiogroup shiny-input-container">
+                      <label class="control-label" for="edu">Education of Principal Operator</label>
+                      <div class="shiny-options-group">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="edu" value="Primary School" checked="checked"/>
+                            <span>Primary School</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="edu" value="High School"/>
+                            <span>High School</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="edu" value="Diploma"/>
+                            <span>Diploma</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="edu" value="Community College"/>
+                            <span>Community College</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="edu" value="Bachelor&#39;s Degree"/>
+                            <span>Bachelor's Degree</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="edu" value="Post Grad Degree"/>
+                            <span>Post Grad Degree</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="housing" class="form-group shiny-input-radiogroup shiny-input-container">
+                      <label class="control-label" for="housing">Housing System</label>
+                      <div class="shiny-options-group">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="housing" value="Tie Stall" checked="checked"/>
+                            <span>Tie Stall</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="housing" value="Free Stall"/>
+                            <span>Free Stall</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="housing" value="Loose Housing"/>
+                            <span>Loose Housing</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="milking_system" class="form-group shiny-input-radiogroup shiny-input-container">
+                      <label class="control-label" for="milking_system">Milking System</label>
+                      <div class="shiny-options-group">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="milking_system" value="Pipeline" checked="checked"/>
+                            <span>Pipeline</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="milking_system" value="Parlour"/>
+                            <span>Parlour</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="feeding_system" class="form-group shiny-input-radiogroup shiny-input-container">
+                      <label class="control-label" for="feeding_system">Feeding System</label>
+                      <div class="shiny-options-group">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="feeding_system" value="Manual" checked="checked"/>
+                            <span>Manual</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="feeding_system" value="Semi-automated"/>
+                            <span>Semi-automated</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="feeding_system" value="Fully automated"/>
+                            <span>Fully automated</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="robots" class="form-group shiny-input-radiogroup shiny-input-container">
+                      <label class="control-label" for="robots">Were milking cows milked using robots</label>
+                      <div class="shiny-options-group">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="robots" value="Yes" checked="checked"/>
+                            <span>Yes</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="robots" value="No"/>
+                            <span>No</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="milking_cows_tmr" class="form-group shiny-input-radiogroup shiny-input-container">
+                      <label class="control-label" for="milking_cows_tmr">Were milking cows fed using Total Mixed Ration (TMR)</label>
+                      <div class="shiny-options-group">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="milking_cows_tmr" value="Yes" checked="checked"/>
+                            <span>Yes</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="milking_cows_tmr" value="No"/>
+                            <span>No</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="heifers_tmr" class="form-group shiny-input-radiogroup shiny-input-container">
+                      <label class="control-label" for="heifers_tmr">Were heifers fed using Total Mixed Ration (TMR)</label>
+                      <div class="shiny-options-group">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="heifers_tmr" value="Yes" checked="checked"/>
+                            <span>Yes</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="heifers_tmr" value="No"/>
+                            <span>No</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="separated" class="form-group shiny-input-radiogroup shiny-input-container">
+                      <label class="control-label" for="separated">Were milking cows separated and fed according to production level</label>
+                      <div class="shiny-options-group">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="separated" value="Yes" checked="checked"/>
+                            <span>Yes</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="separated" value="No"/>
+                            <span>No</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="manure" class="form-group shiny-input-radiogroup shiny-input-container">
+                      <label class="control-label" for="manure">Manure Handling System</label>
+                      <div class="shiny-options-group">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="manure" value="Manual" checked="checked"/>
+                            <span>Manual</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="manure" value="Stable Cleaner"/>
+                            <span>Stable Cleaner</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="manure" value="Manure Pack"/>
+                            <span>Manure Pack</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="manure" value="Liqud System"/>
+                            <span>Liqud System</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="breed" class="form-group shiny-input-radiogroup shiny-input-container">
+                      <label class="control-label" for="breed">Breed of Herd</label>
+                      <div class="shiny-options-group">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="breed" value="Holstein" checked="checked"/>
+                            <span>Holstein</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="breed" value="Guernsey"/>
+                            <span>Guernsey</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="breed" value="Jersey"/>
+                            <span>Jersey</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="breed" value="Brown Swiss"/>
+                            <span>Brown Swiss</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="breed" value="Milking Shorthorn"/>
+                            <span>Milking Shorthorn</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="breed" value="Ayrshire"/>
+                            <span>Ayrshire</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="milk_recording" class="form-group shiny-input-radiogroup shiny-input-container">
+                      <label class="control-label" for="milk_recording">Enrolled in Milk Recording</label>
+                      <div class="shiny-options-group">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="milk_recording" value="Yes" checked="checked"/>
+                            <span>Yes</span>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="milk_recording" value="No"/>
+                            <span>No</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="age_calving">Average age of heifers at first calving (months)</label>
+                      <input id="age_calving" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="calving_interval">Average calving interval of herd (months)</label>
+                      <input id="calving_interval" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="barn_capacity">Maximum Capacity of Dairy Cow Barn (head)</label>
+                      <input id="barn_capacity" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="box box-solid box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Output Information</h3>
+                  </div>
+                  <div class="box-body">
+                    <div class="form-group shiny-input-container">
+                      <label for="q_milk">Total Quantity of Milk Shipped for Year (litres)</label>
+                      <input id="q_milk" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="q_butterfat">Total Butterfat Production for Year (kilograms)</label>
+                      <input id="q_butterfat" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="n_lactating_cows">Average Number of Lactating Cows for Year (head)</label>
+                      <input id="n_lactating_cows" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="n_dry_cows">Average Number of Dry Cows for Year (head)</label>
+                      <input id="n_dry_cows" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="n_heifers">Average Number of Heifers for Year (head)</label>
+                      <input id="n_heifers" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="box box-solid box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Expense Information</h3>
+                  </div>
+                  <div class="box-body">
+                    <div class="form-group shiny-input-container">
+                      <label for="purchased_feed">Purchased feed expense</label>
+                      <input id="purchased_feed" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="homegrown_feed">Homegrown feed expense valued at market value/prices</label>
+                      <input id="homegrown_feed" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="capital">Capital expense</label>
+                      <input id="capital" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="labour_family">Number of family labour hours</label>
+                      <input id="labour_family" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="exp_l_family">Family labour expense valued at market wage rates</label>
+                      <input id="exp_l_family" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="labour_hired">Number of hired labour hours</label>
+                      <input id="labour_hired" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div class="form-group shiny-input-container">
+                      <label for="exp_l_hired">Hired labour expense</label>
+                      <input id="exp_l_hired" type="number" class="form-control" value="1" min="0"/>
+                    </div>
+                    <div id="rendered" class="shiny-html-output"></div>
+                    <span class="help-block">Note:</span>
+                    <span class="help-block">*    To estimate your family labour expense, multiply the number 
+                                    of family hours worked by the average wage per hour you pay your hired labour. 
+                                    If you do not have any hired labour then use $20/hour as a default wage rate.</span>
+                    <span class="help-block">** To estimate homegrown feed expense valued at market prices, multiply the quantity 
+                                    of feed produced by its per unit price if you were to buy it from your local distributor.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6" align="center">
+                  <button class="btn btn-default action-button" id="submit" style="width: 25%; color: white; &#10;                             background-color: #3c8dbc; &#10;                             position: relative; &#10;                             left: 2%;&#10;                             height: 50px;&#10;                             text-align:center;&#10;                             border-radius: 6px;&#10;                             border-width: 2px" type="button">Submit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="shiny-tab-welcome">
+            <div class="row">
+              <div class="col-sm-12" align="center">
+                <div id="cowbg" class="shiny-plot-output" style="width: 100% ; height: 400px"></div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="shiny-tab-data">
+            <div id="responses" style="width:auto; height:auto; " class="datatables html-widget html-widget-output"></div>
+            <hr/>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="shiny-tab-overall_eff">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="shiny-html-output col-sm-25%" id="infobox_overall_es"></div>
+              </div>
+              <div class="col-sm-6">
+                <div class="shiny-html-output col-sm-25%" id="infobox_overall_esf"></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="box box-solid box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Plot of Overall Efficiency Scores</h3>
+                    <div class="box-tools pull-right">
+                      <button class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="box-body">
+                    <div id="main_plot" class="shiny-plot-output" style="width: 100% ; height: 400px"></div>
+                    <div id="text_eff_score" class="shiny-text-output"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="box box-solid box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Distribution of Overall Efficiency Scores</h3>
+                    <div class="box-tools pull-right">
+                      <button class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="box-body">
+                    <div id="eff_hist" class="shiny-plot-output" style="width: 100% ; height: 400px"></div>
+                    <div id="text_eff_score_dist" class="shiny-text-output"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="box box-solid box-primary">
+                <div class="box-header">
+                  <h3 class="box-title">Summary</h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse">
+                      <i class="fa fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div id="eff_score_summary" class="shiny-html-output"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="shiny-tab-feed_eff">
+            <div>
+              <div class="box box-solid box-primary">
+                <div class="box-header">
+                  <h3 class="box-title">Plot of Feed Efficiency Scores</h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse">
+                      <i class="fa fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div id="main_plot.f" class="shiny-plot-output" style="width: 100% ; height: 400px"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="shiny-tab-milk_output">
+            <div>
+              <div class="box box-solid box-primary">
+                <div class="box-header">
+                  <h3 class="box-title">Milk Output</h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse">
+                      <i class="fa fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div id="tb_milk_output" class="shiny-html-output"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="shiny-tab-expenses">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="box box-solid box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Figure: My Expenses</h3>
+                    <div class="box-tools pull-right">
+                      <button class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="box-body">
+                    <div id="my.exp.brkd" class="shiny-plot-output" style="width: 100% ; height: 400px"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="box box-solid box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Figure: Average Operation's Expenses</h3>
+                    <div class="box-tools pull-right">
+                      <button class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="box-body">
+                    <div id="my.exp.brkd.ave" class="shiny-plot-output" style="width: 100% ; height: 400px"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="box box-solid box-primary" style="height: 300px">
+                  <div class="box-header">
+                    <h3 class="box-title">Table: My Expenses</h3>
+                    <div class="box-tools pull-right">
+                      <button class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="box-body">
+                    <div id="my.exp.brkd.tb" class="shiny-html-output"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="box box-solid box-primary" style="height: 300px">
+                  <div class="box-header">
+                    <h3 class="box-title">Table: Average Operation's Expenses</h3>
+                    <div class="box-tools pull-right">
+                      <button class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="box-body">
+                    <div id="my.exp.brkd.ave.tb" class="shiny-html-output"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="shiny-tab-download">
+            <div class="col-sm-12">
+              <div class="box box-primary">
+                <div class="box-header">
+                  <h3 class="box-title">Download Report</h3>
+                </div>
+                <div class="box-body">
+                  <a id="report" class="btn btn-default shiny-download-link " href="" target="_blank" download>
+                    <i class="fa fa-download"></i>
+                    Generate PDF Report
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="shiny-tab-about_us">
+            <div class="col-sm-12">
+              <div class="box box-primary">
+                <div class="box-header">
+                  <h3 class="box-title">About Us</h3>
+                </div>
+                <div class="box-body">
+                  <div id="about_us_txt" class="shiny-text-output"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="shiny-tab-contact_us">
+            <div class="col-sm-12">
+              <div class="box box-primary">
+                <div class="box-header">
+                  <h3 class="box-title">Contact Us</h3>
+                </div>
+                <div class="box-body">
+                  <h4>Email: ghailu@uoguelph.ca</h4>
+                  <h4>Phone: (519) 824-4120</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+
+</html>
