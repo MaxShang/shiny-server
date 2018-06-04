@@ -387,50 +387,47 @@ server <- function(input, output) {
    
     # generate report---------------
     
-    output$report <- downloadHandler(
-            
-            
-      # # For PDF output, change this to "report.pdf"
-      filename = "report.pdf",
-      content = function(file) {
-        # Copy the report file to a temporary directory before processing it, in
-        # case we don't have write permissions to the current working dir (which
-        # can happen when deployed).
-        tempReport <- file.path(tempdir(), "report.Rmd")
-        file.copy("report.Rmd", tempReport, overwrite = TRUE)
-
-        # Set up parameters to pass to Rmd document
-        params <- list(
-          q_milk = input$q_milk,
-          purchased_feed= input$purchased_feed,
-          homegrown_feed= input$homegrown_feed,
-          exp_l_family= input$exp_l_family,
-          exp_l_hired= input$exp_l_hired,
-          capital = input$capital,
-          misc = input$misc,
-          n.row = n.row
-        )
-
-        # Knit the document, passing in the `params` list, and eval it in a
-        # child of the global environment (this isolates the code in the document
-        # from the code in this app).
-        input$report
-        withProgress(message = 'Generating Report: ', value = 0, {
-                n=100
-                for (i in 1:100){
-                        incProgress(1/n, detail = paste("  ",i,"%","done"))
-                        Sys.sleep(0.01)}
-                rmarkdown::render(tempReport, output_file = file,
-                                  params = params,
-                                  envir = new.env(parent = globalenv())
-                )
-        
-                
-               
-        
-        
-      })}
-    )
+    # output$report <- downloadHandler(
+    #         
+    #         
+    #   # # For PDF output, change this to "report.pdf"
+    #   filename = "report.pdf",
+    #   content = function(file) {
+    #     # Copy the report file to a temporary directory before processing it, in
+    #     # case we don't have write permissions to the current working dir (which
+    #     # can happen when deployed).
+    #     tempReport <- file.path(tempdir(), "report.Rmd")
+    #     file.copy("report.Rmd", tempReport, overwrite = TRUE)
+    # 
+    #     # Set up parameters to pass to Rmd document
+    #     params <- list(
+    #       q_milk = input$q_milk,
+    #       purchased_feed= input$purchased_feed,
+    #       homegrown_feed= input$homegrown_feed,
+    #       exp_l_family= input$exp_l_family,
+    #       exp_l_hired= input$exp_l_hired,
+    #       capital = input$capital,
+    #       misc = input$misc,
+    #       n.row = n.row
+    #     )
+    # 
+    #     # Knit the document, passing in the `params` list, and eval it in a
+    #     # child of the global environment (this isolates the code in the document
+    #     # from the code in this app).
+    #     input$report
+    #     withProgress(message = 'Generating Report: ', value = 0, {
+    #             n=100
+    #             for (i in 1:100){
+    #                     incProgress(1/n, detail = paste("  ",i,"%","done"))
+    #                     Sys.sleep(0.01)}
+    #             rmarkdown::render(tempReport, output_file = file,
+    #                               params = params,
+    #                               envir = new.env(parent = globalenv())
+    #             ) 
+    #   }
+    #   )
+    #   }
+    # )
 })
   
   
