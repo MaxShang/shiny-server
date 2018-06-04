@@ -20,10 +20,11 @@ library(Benchmarking)
 library(knitr)
 library(kableExtra)
 library(gridExtra)
+library(tinytex)
 
 
 # set to data location on server
-testData <- read.csv("data.csv")
+testData <- read.csv("/srv/shiny-server/benchmark/data.csv")
 
 #dir<-getwd()
 #testData <- read.csv(paste0(dir,"/data.csv"))
