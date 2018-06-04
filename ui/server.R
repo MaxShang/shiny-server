@@ -1,6 +1,5 @@
 library(shinydashboard)
 library(shiny)
-library(googlesheets)
 library(Benchmarking)
 library(ggplot2)
 library(DT)
