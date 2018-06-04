@@ -410,8 +410,8 @@ server <- function(input, output) {
                 n=100
                 for (i in 1:100){
                         incProgress(1/n, detail = paste("  ",i,"%","done"))
-                        Sys.sleep(0.02)}
-                rmarkdown::render(quiet = TRUE,tempReport, output_file = file,
+                        Sys.sleep(0.01)}
+                rmarkdown::render(tempReport, output_file = file,
                                   params = params,
                                   envir = new.env(parent = globalenv())
                 )
